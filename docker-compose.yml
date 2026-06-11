@@ -1,0 +1,97 @@
+version: "3.9"
+
+services:
+  fraud-api:
+    build: .
+    container_name: fraud_api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - MODEL_REGISTRY_DIR=/app/model_registry
+      - SAVED_MODELS_DIR=/app/notebooks/saved_models
+      - DEFAULT_MODEL=xgboost
+      - FRAUD_THRESHOLD=0.5
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    volumes:
+      - model_registry:/app/model_registry
+      - ./notebooks/saved_models:/app/notebooks/saved_models:ro
+      - ./logs:/app/logs
+    depends_on:
+      - mlflow
+    networks:
+      - fraud_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.11.0
+    container_name: fraud_mlflow
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    volumes:
+      - mlflow_data:/mlflow
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --port 5000
+      --backend-store-uri sqlite:///mlflow/mlflow.db
+      --default-artifact-root /mlflow/artifacts
+    networks:
+      - fraud_net
+
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    container_name: fraud_prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=15d"
+    networks:
+      - fraud_net
+
+  grafana:
+    image: grafana/grafana:10.4.0
+    container_name: fraud_grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=fraudadmin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on:
+      - prometheus
+    networks:
+      - fraud_net
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: fraud_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - fraud_net
+
+volumes:
+  model_registry:
+  mlflow_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  fraud_net:
+    driver: bridge

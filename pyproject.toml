@@ -1,11 +1,41 @@
 [project]
 name = "credit-card-fraud-detection"
 version = "0.1.0"
-description = "Add your description here"
+description = "Credit card fraud detection with ML pipeline, API, and MLOps"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "imblearn>=0.0",
+    "matplotlib>=3.10.9",
     "numpy>=2.4.6",
     "pandas>=3.0.3",
     "scikit-learn>=1.9.0",
+    "seaborn>=0.13.2",
+    "xgboost>=3.2.0",
+    "scipy>=1.13.0",
+    "joblib>=1.4.0",
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "pydantic>=2.7.0",
+    "prometheus-client>=0.20.0",
+    "shap>=0.45.0",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=5.0.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.6.0",
+    "black>=24.0.0",
+    "isort>=5.13.0",
+    "bandit>=1.7.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["src/evaluation.py"]
