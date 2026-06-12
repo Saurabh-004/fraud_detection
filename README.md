@@ -52,6 +52,7 @@ A production-grade machine learning system for real-time credit card fraud detec
 
 ```
 fraud_detection/
+├── main.py                 # Local entry point (uvicorn → src.api)
 ├── src/                    # Core source code
 │   ├── api.py              # FastAPI app & endpoints
 │   ├── mlops.py            # MLOps utilities
