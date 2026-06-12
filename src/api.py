@@ -41,7 +41,8 @@ REQUEST_LATENCY = Histogram(
 )
 DRIFT_ALERTS = Counter("fraud_api_drift_alerts_total", "Drift alert count", ["feature"])
 
-REGISTRY_DIR = Path(os.getenv("MODEL_REGISTRY_DIR", "model_registry"))
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+REGISTRY_DIR = Path(os.getenv("MODEL_REGISTRY_DIR", PROJECT_ROOT / "model_registry"))
 REGISTRY_DIR.mkdir(exist_ok=True)
 
 
