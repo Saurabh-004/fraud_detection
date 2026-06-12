@@ -1,8 +1,19 @@
 {
   "versions": {
+    "v20260612_152637": {
+      "version": "v20260612_152637",
+      "path": "D:\\project\\Credit_Card_fraud_detection\\model_registry\\model_v20260612_152637.pkl.gz",
+      "sha256": "06cb63c69aaaf6c87458ca206e459b06",
+      "metadata": {
+        "algorithm": "Logistic Regression",
+        "roc_auc": 0.9785390943502885,
+        "pr_auc": 0.6922208168432005
+      },
+      "registered_at": "2026-06-12T15:26:37.603707"
+    },
     "v_notebook_xgboost": {
       "version": "v_notebook_xgboost",
-      "path": "model_registry\\model_v_notebook_xgboost.pkl.gz",
+      "path": "D:\\project\\Credit_Card_fraud_detection\\model_registry\\model_v_notebook_xgboost.pkl.gz",
       "sha256": "95378f897947c18cba7c445ea6c97bde",
       "metadata": {
         "source": "notebooks/saved_models",
@@ -52,6 +63,6 @@
       "registered_at": "2026-06-11T11:25:57.674078"
     }
   },
-  "current": "v_notebook_xgboost",
-  "previous": null
+  "current": "v20260612_152637",
+  "previous": "v_notebook_xgboost"
 }
